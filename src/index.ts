@@ -2,11 +2,18 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
 const typeDefs = `
+  type User {
+    githubLogin: ID!
+    name: String
+    avatar: String
+    postedPhotos: [Photo!]!
+  }
   type Photo {
     id: ID!
     url: String!
     name: String!
     description: String
+    postedBy: User!
   }
   type Query {
     totalPhotos: Int!
