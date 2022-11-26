@@ -24,7 +24,18 @@ const typeDefs = `
   }
 `
 let _id = 0
-const photos = []
+const users = [
+  {githubLogin: "tttt", name: 'Mike'}
+]
+const photos = [
+  {
+    id: 1,
+    name: 'test photos',
+    description: 'test d',
+    category: 'ACTION',
+    githubUser: 'tttt'
+  }
+]
 
 const resolvers = {
   Query: {
@@ -42,7 +53,15 @@ const resolvers = {
     }
   },
   Photo: {
-    url: parent => `http://yoursite.com/img/${parent.id}.jpg`
+    url: parent => `http://yoursite.com/img/${parent.id}.jpg`,
+    postedBy: parent => {
+      return users.find(u => u.githubLogin === parent.githubLogin)
+    },
+    user: {
+      postedPhotos: parent => {
+        return photos.filter(p => p.githubUser === parent.githubLogin)
+      }
+    }
   }
 }
 
