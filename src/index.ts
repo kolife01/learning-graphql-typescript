@@ -1,13 +1,16 @@
+import { GraphQLScalarType } from 'graphql'
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
 const typeDefs = `
+  scalar DateTime
   type User {
     githubLogin: ID!
     name: String
     avatar: String
     postedPhotos: [Photo!]!
     inPhotos: [Photo!]!
+    created: DateTime!
   }
   type Photo {
     id: ID!
@@ -37,21 +40,24 @@ const photos = [
     name: 'test photos',
     description: 'test d',
     category: 'ACTION',
-    githubUser: 'gPlake'
+    githubUser: 'gPlake',
+    created: '3-28-1977'
   },
   {
     id: 2,
     name: 'test photos2',
     description: 'test d2',
     category: 'ACTION',
-    githubUser: 'sSchmidt'
+    githubUser: 'sSchmidt',
+    created: '1-2-1977'
   },
   {
     id: 3,
     name: 'test photos3',
     description: 'test d3',
     category: 'ACTION',
-    githubUser: 'sSchmidt'
+    githubUser: 'sSchmidt',
+    created: '2018-04-15T19:09:67.308Z'
   }
 ]
 
@@ -71,7 +77,8 @@ const resolvers = {
     postPhoto(parent, args) {
       const newPhoto = {
         id: _id++,
-        ...args
+        ...args.input,
+        created: new Date()
       }
       photos.push(args)
       return newPhoto
@@ -93,7 +100,14 @@ const resolvers = {
     inPhotos: parent => tags.filter(tag => tag.userID === parent.id)
                             .map(tag => tag.photoID)
                             .map(photoID => photos.find(p => p.id === photoID))
-  }
+  },
+  DateTime: new GraphQLScalarType({
+    name: 'DateTime',
+    description: 'A valid date time value',
+    parseValue: value => new Date(value as string),
+    serialize: value => new Date(value as string).toISOString(),
+    parseLiteral: ast => (ast as any).value
+  })
 }
 
 const server = new ApolloServer({
