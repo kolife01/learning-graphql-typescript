@@ -1,33 +1,10 @@
 import { GraphQLScalarType } from 'graphql'
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { readFileSync } from 'fs';
 
-const typeDefs = `
-  scalar DateTime
-  type User {
-    githubLogin: ID!
-    name: String
-    avatar: String
-    postedPhotos: [Photo!]!
-    inPhotos: [Photo!]!
-    created: DateTime!
-  }
-  type Photo {
-    id: ID!
-    url: String!
-    name: String!
-    description: String
-    postedBy: User!
-    taggedUsers: [User!]!
-  }
-  type Query {
-    totalPhotos: Int!
-    allPhotos: [Photo!]!
-  }
-  type Mutation {
-    postPhoto(name: String! description: String): Photo!
-  }
-`
+const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
+
 let _id = 0
 const users = [
   {githubLogin: "mHattrup", name: 'Mike'},
