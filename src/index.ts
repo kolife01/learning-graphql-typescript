@@ -3,7 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { readFileSync } from 'fs';
 
-const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
+const typeDefs = readFileSync('./src/schema.graphql', { encoding: 'utf-8' });
 
 let _id = 0
 const users = [
